@@ -53,4 +53,7 @@ Error Handling: The script includes basic error handling, but you might want to 
 Resource Usage: Monitor the resource usage of the container, especially on resource-constrained devices like the Raspberry Pi.
 Security: Be mindful of security best practices when using service accounts and storing credentials.
 
+## Future work
+- converting the single images to a video
+
 
