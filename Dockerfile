@@ -1,4 +1,8 @@
-FROM python:3.13-slim
+# None ARM Target 
+# FROM python:3.13-slim 
+
+# ARM Target (For example Pi5)
+FROM arm64v8/python:3.13-slim 
 
 WORKDIR /app
 
