@@ -28,21 +28,21 @@ This project captures timelapse images from an RTSP camera stream and automatica
 
 2. (Cloud Storage) Create a Google Service Account:
 
-In your Google Cloud console, create a service account.
-Grant the service account "Editor" or "Writer" access to the Google Drive folder where you want to store the images.
-Download the service account key file (key.json) and place it in the project directory.
+   In your Google Cloud console, create a service account.
+   Grant the service account "Editor" or "Writer" access to the Google Drive folder where you want to store the images.
+   Download the service account key file (key.json) and place it in the project directory.
 
 3. Configure Settings:
 
-Create a config.py file in the project directory, rename and change config-example.py.  
+   Create a config.py file in the project directory, rename and change config-example.py.  
 
 4. Configuration
-config.py:
-RTSP_URL: Set the RTSP URL of your camera.
-SCREENSHOT_INTERVAL: How often a screenshot is taken.
-FOLDER_ID: Google Drive Folder as upload targer.
-capture.py:
-dir: Change the directory where images are temporarily stored (default is "timelapse").
+   config.py:
+      RTSP_URL: Set the RTSP URL of your camera.
+      SCREENSHOT_INTERVAL: How often a screenshot is taken.
+      FOLDER_ID: Google Drive Folder as upload targer.
+   capture.py:
+      dir: Change the directory where images are temporarily stored (default is "timelapse").
 
 ## Usage
 Once the program is running, it will automatically capture images from your RTSP camera at the specified interval and upload them to your Google Drive folder.
