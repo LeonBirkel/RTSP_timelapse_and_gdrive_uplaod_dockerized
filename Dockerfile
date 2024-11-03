@@ -1,25 +1,27 @@
-# None ARM Target 
-# FROM python:3.13-slim 
 
-# ARM Target (For example Pi5)
-FROM arm64v8/python:3.13-slim 
+# None ARM Target => ARG TARGET_ARCH=amd64
+# ARM Target (For example Pi5) => ARG TARGET_ARCH=arm64v8
+ARG TARGET_ARCH=amd64 
 
-WORKDIR /app
+FROM ${TARGET_ARCH}/python:3.13-slim 
 
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && \
-    apt-get install -y ffmpeg libffi-dev libssl-dev && \
+    apt-get install -y --no-install-recommends \
+        libgl1-mesa-glx \
+        libglib2.0-0 \
+    && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install opencv-python opencv-contrib-python
-RUN pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib 
+WORKDIR /app
+    
+# Install dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Create necessary directories
 RUN mkdir -p /app/timelapse/
 
-# Copy project files
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 
