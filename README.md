@@ -22,7 +22,7 @@ This project captures timelapse images from an RTSP camera stream and automatica
 1. **Clone the Repository:**
 
    ```bash
-   git clone [https://github.com/LeonBirkel/RTSP_timelapse_and_gdrive_uplaod_dockerized](https://github.com/LeonBirkel/RTSP_timelapse_and_gdrive_uplaod_dockerized)
+   git clone https://github.com/LeonBirkel/RTSP_timelapse_and_gdrive_uplaod_dockerized
    cd RTSP_timelapse_and_gdrive_uplaod_dockerized
 
 2. Create a Google Service Account:
