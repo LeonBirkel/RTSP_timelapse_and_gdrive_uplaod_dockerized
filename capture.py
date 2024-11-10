@@ -1,16 +1,20 @@
+import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'env')))
+import config
+
 import cv2
 import time
-import os
 from datetime import datetime
 import io
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
 from google.oauth2 import service_account
-import config
 import threading
 # Replace with your RTSP URL
 
-SERVICE_ACCOUNT_FILE = 'key.json'  # Path to your key file inside the container
+SERVICE_ACCOUNT_FILE = 'env/key.json'  # Path to your key file inside the container
 SCOPES = ['https://www.googleapis.com/auth/drive.file','https://www.googleapis.com/auth/drive'] 
 creds = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
@@ -56,9 +60,8 @@ def capture_screenshot():
 
     except Exception as e:
         print(f"An error occurred: {e}")
-
-def upload_to_drive(filename):
-    """Uploads a file to Google Drive and returns True if successful."""
+def upload_to_drive(filename, retries=3, backoff_factor=2):
+    """Uploads with retry and exponential backoff."""
     try:
         file_metadata = {'name': filename, 'parents': [config.FOLDER_ID]}  # Replace with your folder ID
         media = MediaIoBaseUpload(io.BytesIO(open(f"{dir}/{filename}", 'rb').read()),
@@ -69,9 +72,21 @@ def upload_to_drive(filename):
         print(f'File ID: {file.get("id")} uploaded to Google Drive')
         return True  # Upload successful
 
+    except BrokenPipeError as e:
+        print(f"Broken pipe error: {e}")
+        if retries > 0:
+            wait_time = backoff_factor ** (3 - retries)  # Exponential backoff
+            print(f"Retrying in {wait_time} seconds...")
+            time.sleep(wait_time)
+            return upload_to_drive(filename, retries - 1, backoff_factor)
+        else:
+            print("Max retries reached. Upload failed.")
+            return False
+
     except Exception as e:
         print(f"An error occurred while uploading: {e}")
         return False  # Upload failed
+
 
 if __name__ == '__main__':
     print("START")
@@ -85,6 +100,8 @@ if __name__ == '__main__':
         end_time = time.time()  # Get the end time
         execution_time = end_time - start_time
 
-        # Adjust the sleep time to maintain the 30-second interval
+        # Adjust the sleep time to maintain the interval
         if execution_time < config.SCREENSHOT_INTERVAL:
             time.sleep(config.SCREENSHOT_INTERVAL - execution_time) 
+
+
